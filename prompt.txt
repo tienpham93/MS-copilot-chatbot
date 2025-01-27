@@ -3,11 +3,19 @@ I want to setup a simple website includes a chatbox for demo that written in typ
 1. Root folder should have package.json:
     - using yarn command instead of npm
     - should have 2 workspaces that are frontend and server
-    - should have common dependencies
+    - should have common dependencies such as typescript, prettier, ts-node...etc
     - should setup prettier file with most common config
     - should have tsconfig file with most common config
 
-2. It should have app folder that contains frontend, server and shared folders:
+2. Its folder structure:
+    app/
+    ├── frontend/
+    ├── server/
+    ├── shared/
+    ├── package.json
+    ├── yarn.lock
+    ├── tsconfig.json
+    ├── .prettierrc
 
 3. Frontend folder should have:
     - Based on React and start on port 3000
