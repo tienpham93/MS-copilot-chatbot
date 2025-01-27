@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "lib": [
+            "dom",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "allowJs": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "composite": true,
+    },
+    "references": [
+        {
+            "path": "./app/frontend"
+        },
+        {
+            "path": "./app/server"
+        },
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}
