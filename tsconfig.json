@@ -19,6 +19,8 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "composite": true,
+        "outDir": "./dist",
+        "rootDir": "./app" // Set rootDir to the common root of all source files
     },
     "references": [
         {
@@ -26,9 +28,16 @@
         },
         {
             "path": "./app/server"
-        },
+        }
     ],
+    "include": [
+        "app/frontend/src/**/*.ts",
+        "app/frontend/src/**/*.tsx",
+        "app/shared/**/*.ts",
+        "app/server/src/**/*.ts"
+, "app/shared/env.ts"    ],
     "exclude": [
-        "node_modules"
-    ],
+        "node_modules",
+        "build"
+    ]
 }

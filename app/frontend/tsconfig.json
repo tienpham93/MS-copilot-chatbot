@@ -2,12 +2,13 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./build",
-        "rootDir": "./src",
+        "rootDir": "../",
         "composite": true
     },
     "include": [
         "./src/**/*.ts",
-        "./src/**/*.tsx"
+        "./src/**/*.tsx",
+        "../shared/**/*.ts"
     ],
     "exclude": [
         "build/**/*",
