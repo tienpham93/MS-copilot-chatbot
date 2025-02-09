@@ -25,6 +25,7 @@ export interface Ticket {
     content: string;
     createdBy: User;
     createdDate: Date;
+    status: 'Completed' | 'Inprogress' | 'Open';
 }
 
 export interface AuthResponse {

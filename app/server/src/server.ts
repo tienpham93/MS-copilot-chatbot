@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import router from './router';
-import { BFFHost } from 'app/shared/env';
+import { BFFHost } from './env';
 
 const app = express();
 

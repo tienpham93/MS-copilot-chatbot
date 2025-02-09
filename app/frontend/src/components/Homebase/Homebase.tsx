@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import MenuBar from "./MenuBar";
-import UserInfo from "./UserInfo";
-import ChatBox from "./Chatbox";
-import HotTopics from "./HotTopics";
+import MenuBar from "./MenuBar/MenuBar";
+import UserInfo from "./UserInfo/UserInfo";
+import ChatBox from "./Chatbox/Chatbox";
+import HotTopics from "./HotTopics/HotTopics";
 import { useNavigate } from "react-router-dom";
 import { checkAuth, loadUserData } from "../../contexts/AuthContext";
-import { User } from "app/shared";
+import { User } from "../../types";
+import './Homebase.css';
 
 const Homebase: React.FC = () => {
+    const [selectedTopic, setSelectedTopic] = useState('');
     const [user, setUser] = useState<User | null>(null);
-    const [chatInput, setChatInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
@@ -19,10 +20,6 @@ const Homebase: React.FC = () => {
         checkAuth(navigate);
         loadUserData(setUser, setError, setIsLoading);
     }, []);
-
-    const handleTopicSelect = (topic: string) => {
-        setChatInput(topic);
-    }
 
     if (isLoading) {
         return (
@@ -42,19 +39,22 @@ const Homebase: React.FC = () => {
         );
     }
 
+    const handleTopicClick = (topic: string) => {
+        setSelectedTopic(topic);
+      };
+
     return (
         <div className="homebase-container">
             <MenuBar />
-            <h1>Welcome, {user?.fullname}</h1>
-            <div className="homebase-container">
+            <div className="homebase-content">
                 <div className="left-panel">
                     {user && <UserInfo user={user} />}
                 </div>
                 <div className="center-panel">
-                    <ChatBox />
+                    <ChatBox inputValue={selectedTopic} setInputValue={setSelectedTopic} />
                 </div>
                 <div className="right-panel">
-                    <HotTopics onTopicSelect={handleTopicSelect}/>
+                    <HotTopics onTopicSelect={handleTopicClick} />
                 </div>
             </div>
         </div>

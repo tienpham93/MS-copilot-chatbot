@@ -6,6 +6,6 @@ const router = express.Router();
 router.use('/webchat/message', postGenerateHandler);
 router.use('/webchat/submit', postSubmitHandler);
 router.use('/webchat/login', postLoginHandler);
-router.use('/webchat/tikets', getTicketsHandler);
+router.use('/webchat/tickets', getTicketsHandler);
 
 export default router;

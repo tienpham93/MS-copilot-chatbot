@@ -1,5 +1,5 @@
-import { llmAgentHost } from 'app/shared/env';
 import { Request, Response } from 'express';
+import { llmAgentHost } from '../env';
 
 export const llmBaseUrl = `http://localhost:${llmAgentHost}`;
 
@@ -63,17 +63,14 @@ export const postLoginHandler = async (req: Request, res: Response): Promise<voi
 export const getTicketsHandler = async (req: Request, res: Response): Promise<void> => {
     const { createdBy } = req.query;
     try {
-        const response = await fetch(`${llmBaseUrl}/agent/tickets`, {
+        const response = await fetch(`${llmBaseUrl}/agent/tickets?createdBy=${createdBy}`, {
             headers: {
                 'Authorization': `Bearer ${req.headers.authorization}`,
             },
         });
 
-        // Filter out tickets by createdBy
         const data = await response.json();
-        const tickets = data.filter((ticket: any) => ticket.createdBy === createdBy);
-
-        res.status(200).json(tickets);
+        res.status(200).json(data);
     } catch (error) {
         console.error('Failed to fetch tickets', error);
         res.status(500).json({ success: false });

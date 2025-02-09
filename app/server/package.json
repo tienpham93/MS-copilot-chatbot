@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "yarn build && node dist/index.js",
+    "start": "yarn build && node dist/server/src/server.js",
     "build": "yarn clean && tsc --build",
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo"
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.8",

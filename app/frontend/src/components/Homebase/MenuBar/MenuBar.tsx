@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import './MenuBar.css';
 
 const MenuBar: React.FC = () => {
     const navigate = useNavigate();
@@ -17,17 +17,22 @@ const MenuBar: React.FC = () => {
     };
 
     const handleDashboardClick = (): void => {
+        navigate('/dashboard');
+    };
+
+    const handleHomebaseClick = (): void => {
         navigate('/homebase');
     };
 
     return (
         <div className="menu-bar">
-            <div className="menu-bar-title">
-                <h1>XCare Management Service</h1>
+            <div className="menu-left">
+                <h2>XCare Management Service</h2>
             </div>
-            <div className="menu-bar-options">
-                <button onClick={handleDashboardClick}>Dashboard</button>
-                <button onClick={handleLogout}>Logout</button>
+            <div className="menu-right">
+                <button onClick={handleDashboardClick} className="menu-button">Dashboard</button>
+                <button onClick={handleHomebaseClick} className="menu-button">Homebase</button>
+                <button onClick={handleLogout} className="menu-button">Logout</button>
             </div>
         </div>
     );

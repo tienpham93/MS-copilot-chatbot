@@ -1,14 +1,23 @@
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useEffect } from "react";
-import { Message } from 'app/shared';
-import { bffUrl } from '../../App';
+import { bffUrl } from '../../../App';
+import { Message } from '../../../types';
+import './Chatbox.css';
+import { useNavigate } from 'react-router-dom';
+import { parseAnswer } from '../../../utils/stringFormatter';
 
-const ChatBox: React.FC = () => {
+interface ChatboxProps {
+    inputValue: string;
+    setInputValue: (value: string) => void;
+}
+
+const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
     const [message, setMessage] = useState<string>('');
     const [chatHistory, setChatHistory] = useState<Message[]>([]);
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const ChatDisplayRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Scroll to the bottom of the chat display
@@ -16,6 +25,27 @@ const ChatBox: React.FC = () => {
             ChatDisplayRef.current.scrollTop = ChatDisplayRef.current.scrollHeight;
         }
     }, [chatHistory]);
+
+    // Set the input value to the selected topic
+    useEffect(() => {
+        if (inputValue) {
+            setMessage(inputValue);
+            inputRef.current?.focus();
+        }
+    }, [inputValue]);
+
+    // Nagivate to login page when token is expired
+    useEffect(() => {
+        const tokenExpiry = localStorage.getItem('tokenExpiry');
+        if (tokenExpiry && Date.now() > parseInt(tokenExpiry)) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('tokenExpiry');
+            localStorage.removeItem('user');
+            localStorage.removeItem('sessionId');
+            localStorage.removeItem('sessionTimestamp');
+            navigate('/');
+        }
+    }, []);
 
     const handleMessageSend = async (e: React.FormEvent | React.KeyboardEvent) => {
         e.preventDefault();
@@ -51,6 +81,9 @@ const ChatBox: React.FC = () => {
 
         // Send the message to the BFF server
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 10 seconds timeout
+
             const response = await fetch(`${bffUrl}/webchat/message`, {
                 method: 'POST',
                 headers: {
@@ -61,19 +94,27 @@ const ChatBox: React.FC = () => {
                     message: message,
                     sessionId: sessionId,
                 }),
+                signal: controller.signal,
             });
+
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 const data = await response.json();
+                const botResponse = data.conversation.message[1].content;
+                const rawAnwser = parseAnswer(botResponse);
+                const content = rawAnwser ? rawAnwser : 'Sorry! something went wrong. Please try again later.';
+
                 if (data) {
                     setChatHistory(prev => [...prev, {
                         id: uuidv4(),
-                        text: data.message,
+                        text: content,
                         timestamp: new Date(),
                         sender: 'bot',
                     }]);
                 }
             }
+
             // check token tokenExpiry in localStorage then Clear sessionId and sessionTimestamp
             const tokenExpiry = localStorage.getItem('tokenExpiry');
             if (tokenExpiry && currentTime > parseInt(tokenExpiry)) {
@@ -90,13 +131,6 @@ const ChatBox: React.FC = () => {
         } finally {
             setIsTyping(false);
         }
-    };
-
-    // Function to start a new conversation
-    const startNewConversation = () => {
-        localStorage.removeItem('sessionId');
-        localStorage.removeItem('sessionTimestamp');
-        setChatHistory([]);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -120,24 +154,24 @@ const ChatBox: React.FC = () => {
                     </div>
                 ))}
                 {isTyping && <div className="chat-message bot">
-                    <p>Typing...</p>
+                    <p>Wait me a sec...</p>
                 </div>}
-                <form onSubmit={handleMessageSend} className="chat-input-form">
-                    <input
-                        type="text"
-                        placeholder="Type a message..."
-                        ref={inputRef}
-                        onKeyDown={handleKeyDown}
-                        value={message}
-                        onChange={(e) => {
-                            setMessage(e.target.value)
-                        }
-                        }
-                    />
-                    <button type="submit" disabled={isTyping || !message.trim()}>Send</button>
-                </form>
             </div>
-            <button onClick={startNewConversation}>Start Over</button>
+            <form onSubmit={handleMessageSend} className="chat-input-form">
+                <input
+                    type="text"
+                    placeholder="Type a message..."
+                    ref={inputRef}
+                    onKeyDown={handleKeyDown}
+                    value={message}
+                    onChange={(e) => {
+                        setMessage(e.target.value);
+                        setInputValue(e.target.value);
+                    }
+                    }
+                />
+                <button type="submit" disabled={!message.trim()}>Send</button>
+            </form>
         </div>
     );
 };

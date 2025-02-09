@@ -1,0 +1,27 @@
+.hot-topics-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ccc;
+}
+
+.hot-topics-container h2 {
+    margin: 0 0 10px 0;
+}
+
+.hot-topics-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hot-topics-container li {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.hot-topics-container li:hover {
+    background-color: #e9e9e9;
+}

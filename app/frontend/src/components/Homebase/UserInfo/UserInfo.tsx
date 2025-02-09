@@ -1,4 +1,5 @@
-import { User } from "app/shared";
+import { User } from "../../../types";
+import './UserInfo.css';
 
 interface UserInfoProps {
     user: User;
@@ -9,7 +10,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ user }) => {
         <div className="user-info-container">
             <div className="user-info-header">
                 <div className="user-info-avatar">
-                    <img src="https://via.placeholder.com/150" alt="User avatar" />
+                    <img src="/ok.jpg" alt="User avatar" />
                 </div>
                 <h2>Personal Information</h2>
             </div>

@@ -3,9 +3,9 @@ import Login from "./components/Login/Login";
 import Homebase from "./components/Homebase/Homebase";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { BrowserRouter as Router } from "react-router-dom";
-import { BFFHost } from "app/shared/env";
+import { BFFHost } from "./env";
 
-export const bffUrl = `localhost:${BFFHost}`;
+export const bffUrl = `http://localhost:${BFFHost}`;
 
 interface ProtectedRouteProps {
   children: React.ReactElement;

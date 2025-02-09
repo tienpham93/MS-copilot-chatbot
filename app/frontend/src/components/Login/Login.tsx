@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { bffUrl } from "../../App";
+import './Login.css';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -27,7 +28,7 @@ const Login: React.FC = () => {
                 },
                 body: JSON.stringify({ username, password }),
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('authToken', data.token);
@@ -46,23 +47,25 @@ const Login: React.FC = () => {
 
     return (
         <div className="login-container">
-            <form onSubmit={handleLogin}>
-                <h1>Login</h1>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">Login</button>
-                {error && <p className="error-message">{error}</p>}
-            </form>
+            <div className="login-panel">
+                <form className="login-form" onSubmit={handleLogin}>
+                    <h1>Login</h1>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button type="submit">Login</button>
+                    {error && <p className="error-message">{error}</p>}
+                </form>
+            </div>
         </div>
     );
 };
