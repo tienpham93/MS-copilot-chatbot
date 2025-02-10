@@ -16,9 +16,6 @@ const UserInfo: React.FC<UserInfoProps> = ({ user }) => {
             </div>
             <div className="user-info-details">
                 <div className="user-info-item">
-                    <span>Full Name: {user.fullname}</span>
-                </div>
-                <div className="user-info-item">
                     <span>Username: {user.username}</span>
                 </div>
                 <div className="user-info-item">

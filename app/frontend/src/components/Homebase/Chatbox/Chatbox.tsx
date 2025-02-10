@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useEffect } from "react";
 import { bffUrl } from '../../../App';
-import { Message } from '../../../types';
+import { Message, User } from '../../../types';
 import './Chatbox.css';
 import { useNavigate } from 'react-router-dom';
 import { parseAnswer } from '../../../utils/stringFormatter';
+import { isKeywordsIncluded } from '../../../utils/commonHelper';
 
 interface ChatboxProps {
     inputValue: string;
@@ -20,11 +21,10 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Scroll to the bottom of the chat display
         if (ChatDisplayRef.current) {
             ChatDisplayRef.current.scrollTop = ChatDisplayRef.current.scrollHeight;
         }
-    }, [chatHistory]);
+    }, [chatHistory, isTyping]);
 
     // Set the input value to the selected topic
     useEffect(() => {
@@ -51,6 +51,9 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         e.preventDefault();
         if (!message.trim()) return;
 
+        const startOverKeywords = ['start over', 'restart', 'new conversation', 'new chat', 'new session'];
+        const submitTicketKeywords = ['submit tickets', 'please submit', 'submit a ticket', 'raise tickets', 'create tickets', 'new ticket', 'raise request', 'submit request', 'create request', 'new request', 'submit a request'];
+
         const newMessage: Message = {
             id: uuidv4(),
             text: message,
@@ -67,11 +70,11 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         let sessionTimestamp = localStorage.getItem('sessionTimestamp');
         const currentTime = new Date().getTime();
         const sessionDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
-
+        
         if (
             !sessionId || !sessionTimestamp // No session data
             || currentTime - parseInt(sessionTimestamp) > sessionDuration // Session expired
-            || ['start over', 'reset', 'new conversation'].includes(message.toLowerCase()) // User wants to start a new conversation
+            || isKeywordsIncluded(message, startOverKeywords) // User wants to start a new conversation
         ) {
             sessionId = uuidv4(); // Generate a new UUID for the session
             localStorage.setItem('sessionId', sessionId);
@@ -83,7 +86,7 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 60000); // 10 seconds timeout
-
+            const username = localStorage.getItem('user') ? (JSON.parse(localStorage.getItem('user') as string)).username : '';
             const response = await fetch(`${bffUrl}/webchat/message`, {
                 method: 'POST',
                 headers: {
@@ -91,6 +94,8 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                 },
                 body: JSON.stringify({
+                    username: username || '',
+                    messageType: isKeywordsIncluded(message, submitTicketKeywords) ? 'submit' : 'general',
                     message: message,
                     sessionId: sessionId,
                 }),
@@ -167,8 +172,7 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
                     onChange={(e) => {
                         setMessage(e.target.value);
                         setInputValue(e.target.value);
-                    }
-                    }
+                    }}
                 />
                 <button type="submit" disabled={!message.trim()}>Send</button>
             </form>

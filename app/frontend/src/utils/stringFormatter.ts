@@ -1,9 +1,9 @@
 
 
 export const parseAnswer = (response: string): string => {
-    const match = response.match(/\*{1,3}\{?['"]?answer['"]?:?\s*(.*?)[\}]*\*{1,3}/);
+    const match = response.match(/\*\*\*{(.*)}\*\*\*/);
     if (match && match[1]) {
-        return match[1].trim();
+        return match[1].replace(`'answer': `, '').replace(/'/g, '').replace(/"/g, '').replace('answer:', '');
     }
     return '';
 };

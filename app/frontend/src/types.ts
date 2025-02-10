@@ -17,6 +17,7 @@ export interface Message {
     text: string;
     sender: 'user' | 'bot';
     timestamp: Date;
+    messageType?: 'general' | 'submit';
 }
 
 export interface Ticket {

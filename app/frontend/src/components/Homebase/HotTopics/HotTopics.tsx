@@ -7,9 +7,8 @@ interface HotTopicsProps {
 
 const HotTopics: React.FC<HotTopicsProps> = ({ onTopicSelect }) => {
     const topics = [
-        { index: 1, title: 'Covid-19', content: 'Covid-19 is a virus that has been spreading rapidly across the world.' },
-        { index: 2, title: 'Vaccines', content: 'Vaccines are used to prevent diseases.' },
-        { index: 3, title: 'Mental Health', content: 'Mental health is an important aspect of overall health.' },
+        { index: 1, title: 'Covid-19', content: 'General sysmptoms of Covid-19 and best tips' },
+        { index: 2, title: 'Online ticket submition', content: 'I would like to submit a ticket with title: <title> and content: <content>' },
     ];
 
     return (

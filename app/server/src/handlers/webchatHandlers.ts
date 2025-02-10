@@ -4,13 +4,17 @@ import { llmAgentHost } from '../env';
 export const llmBaseUrl = `http://localhost:${llmAgentHost}`;
 
 export const postGenerateHandler = async (req: Request, res: Response): Promise<void> => {
-    const { message, sessionId } = req.body;
+    const { message, sessionId, messageType, username } = req.body;
     try {
         const payload = {
             sessionId: sessionId,
+            username: username,
+            messageType: messageType,
             model: "x-care-uncle",
             prompt: message
         };
+
+        console.log('payload', payload)
 
         const response = await fetch(`${llmBaseUrl}/agent/generate`, {
             method: 'POST',
@@ -76,28 +80,3 @@ export const getTicketsHandler = async (req: Request, res: Response): Promise<vo
         res.status(500).json({ success: false });
     }
 };
-
-export const postSubmitHandler = async (req: Request, res: Response): Promise<void> => {
-    const { message } = req.body;
-    try {
-        const payload = {
-            message: message
-        };
-
-        const response = await fetch(`${llmBaseUrl}/agent/submit`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-            res.status(200).json({ success: true });
-        }
-
-    } catch (error) {
-        console.error('Failed to submit message', error);
-        res.status(500).json({ success: false });
-    }
-}
