@@ -47,6 +47,17 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         }
     }, []);
 
+    // Add initial greeting message from bot
+    useEffect(() => {
+        const initialGreeting: Message = {
+            id: uuidv4(),
+            text: 'Hello! Welcome to XCare, how can I assist you today?',
+            timestamp: new Date(),
+            sender: 'bot',
+        };
+        setChatHistory([initialGreeting]);
+    }, []);
+
     const handleMessageSend = async (e: React.FormEvent | React.KeyboardEvent) => {
         e.preventDefault();
         if (!message.trim()) return;
@@ -70,7 +81,7 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         let sessionTimestamp = localStorage.getItem('sessionTimestamp');
         const currentTime = new Date().getTime();
         const sessionDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
-        
+
         if (
             !sessionId || !sessionTimestamp // No session data
             || currentTime - parseInt(sessionTimestamp) > sessionDuration // Session expired
