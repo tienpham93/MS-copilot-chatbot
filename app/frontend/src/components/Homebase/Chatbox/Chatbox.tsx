@@ -6,6 +6,7 @@ import './Chatbox.css';
 import { useNavigate } from 'react-router-dom';
 import { parseAnswer } from '../../../utils/stringFormatter';
 import { isKeywordsIncluded } from '../../../utils/commonHelper';
+import VoteComponent from '../VoteComponent/VoteComponent';
 
 interface ChatboxProps {
     inputValue: string;
@@ -149,6 +150,29 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         }
     };
 
+    const handleVote = async (conversation: any, vote: 'up' | 'down') => {
+        try {
+            const response = await fetch(`${bffUrl}/webchat/analytic`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                body: JSON.stringify({ 
+                    conversation: conversation,
+                    vote: vote 
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send vote');
+            }
+        } catch (error) {
+            console.error('Error sending vote:', error);
+        }
+    };
+
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -167,6 +191,12 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
                     <div key={index} className={`chat-message ${message.sender}`}>
                         <p>{message.text}</p>
                         <span>{message.timestamp.toLocaleTimeString()}</span>
+                        {message.sender === 'bot' && (
+                            <VoteComponent conversation={{
+                                user: chatHistory[index - 1]?.text || '',
+                                bot: message?.text || '',
+                            }} onVote={handleVote} />
+                        )}
                     </div>
                 ))}
                 {isTyping && <div className="chat-message bot">

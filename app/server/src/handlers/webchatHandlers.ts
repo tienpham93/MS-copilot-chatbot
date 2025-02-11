@@ -80,3 +80,29 @@ export const getTicketsHandler = async (req: Request, res: Response): Promise<vo
         res.status(500).json({ success: false });
     }
 };
+
+export const postAnalyticHandler = async (req: Request, res: Response): Promise<void> => {
+    const { conversation, vote } = req.body;
+    try {
+        const response = await fetch(`${llmBaseUrl}/agent/analytic`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${req.headers.authorization}`,
+            },
+            body: JSON.stringify({ 
+                conversation: {
+                    user: conversation.user,
+                    bot: conversation.bot,
+                },
+                vote: vote 
+            }),   
+        });
+
+        const data = await response.json();
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('Failed to fetch tickets', error);
+        res.status(500).json({ success: false });
+    }
+};
