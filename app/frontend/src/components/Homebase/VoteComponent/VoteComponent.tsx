@@ -6,13 +6,13 @@ interface VoteComponentProps {
         user: string;
         bot: string;
     };
-    onVote: (conversation: any, vote: 'up' | 'down') => void;
+    onVote: (conversation: any, vote: 'like' | 'dislike') => void;
 }
 
 const VoteComponent: React.FC<VoteComponentProps> = ({ conversation, onVote }) => {
     const [voted, setVoted] = useState(false);
 
-    const handleVote = (vote: 'up' | 'down') => {
+    const handleVote = (vote: 'like' | 'dislike') => {
         if (!voted) {
             onVote(conversation, vote);
             setVoted(true);
@@ -21,10 +21,10 @@ const VoteComponent: React.FC<VoteComponentProps> = ({ conversation, onVote }) =
 
     return (
         <div className="vote-component">
-            <button onClick={() => handleVote('up')} disabled={voted}>
+            <button onClick={() => handleVote('like')} disabled={voted}>
                 <FaThumbsUp />
             </button>
-            <button onClick={() => handleVote('down')} disabled={voted}>
+            <button onClick={() => handleVote('dislike')} disabled={voted}>
                 <FaThumbsDown />
             </button>
         </div>

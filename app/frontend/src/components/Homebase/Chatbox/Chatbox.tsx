@@ -150,7 +150,7 @@ const ChatBox: React.FC<ChatboxProps> = ({ inputValue, setInputValue }) => {
         }
     };
 
-    const handleVote = async (conversation: any, vote: 'up' | 'down') => {
+    const handleVote = async (conversation: any, vote: 'like' | 'dislike') => {
         try {
             const response = await fetch(`${bffUrl}/webchat/analytic`, {
                 method: 'POST',
